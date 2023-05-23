@@ -1,0 +1,51 @@
+# Version docker-compose
+version: '3.7'
+
+# Servicios
+services:
+
+  host:
+    build: /ubuntu
+    container_name: ubuntu
+    ports:
+      - 8080:8080
+    volumes:
+      - v-tomcat:/usr/local/tomcat/webapps
+    depends_on:
+      - db
+
+  # IMPORTANTE
+  # El nombre del servicio MySQL en el compose, debe ser el mismo que se configura en el string
+  # del conector JDBC de las aplicaciones a desplegar.
+  # Ejemplo:  jdbc:mysql://<servicio_mysql_docker>:3306/<base-de-datos>
+
+  # Servicio MySQL
+  db:
+    build: /mysql
+    container_name: bbdd
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    restart: always
+    volumes:
+      - v-mysql:/var/lib/mysql
+
+  # Servicio PhpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 9090:80
+    environment:
+      - PMA_HOST=db
+    depends_on:
+      - db 
+
+# Volumenes
+volumes:
+  v-tomcat:
+  v-mysql:
+
+  
