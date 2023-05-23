@@ -1,0 +1,5 @@
+#!bin/bash
+
+proftpd -n -c /etc/proftpd/proftpd.conf &
+/etc/init.d/ssh start &
+/usr/sbin/apachectl -D FOREGROUND
